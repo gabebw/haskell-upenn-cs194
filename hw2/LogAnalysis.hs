@@ -6,10 +6,18 @@ import Log
 
 -- Print out some messages, ordered by timestamp
 main :: IO ()
-main = do
+main = printOutWhatWentWrong
+
+printOutSomeMessages :: IO ()
+printOutSomeMessages = do
   let numberOfMessages = 20
   messages <- testParse parse numberOfMessages "error.log"
   print $ inOrder (build messages)
+
+printOutWhatWentWrong :: IO ()
+printOutWhatWentWrong = do
+  mapM_ putStrLn =<< testWhatWentWrong parse whatWentWrong "error.log"
+  return ()
 
 parseMessage :: String -> LogMessage
 parseMessage = parseMessagePieces . words
