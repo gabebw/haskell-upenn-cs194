@@ -1,7 +1,24 @@
 -- http://www.seas.upenn.edu/~cis194/spring13/hw/03-rec-poly.pdf
 module Golf where
 
-import Data.List (group, transpose, nubBy, intercalate, sortBy, sort)
+import Data.List (group, transpose, nubBy, intercalate, sortBy, sort, zip)
+
+--
+-- Exercise 1: Hopscotch
+-- Return a list of lists, where the nth list has every nth item from the
+-- original list.
+--
+skips :: [a] -> [[a]]
+skips l = map (skips' l) $ [1..(length l)]
+
+skips' :: [a] -> Int -> [a]
+skips' [] n = []
+skips' l n = map snd $ filter dividesInto (elemsWithIndices l)
+    where
+        dividesInto (x, _) = (x+1) `mod` n == 0
+
+elemsWithIndices :: [a] -> [(Int, a)]
+elemsWithIndices = zip [0..]
 
 --
 -- Exercise 2: Local Maxima
