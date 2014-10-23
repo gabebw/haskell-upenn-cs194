@@ -42,3 +42,14 @@ inOrder Leaf = []
 inOrder (Node Leaf m rtree) = m:(inOrder rtree)
 inOrder (Node ltree m rtree) = inOrder ltree ++ [m] ++ inOrder rtree
 
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong b = map message $ filter isSevere ordered
+    where
+        ordered = inOrder $ build b
+
+isSevere :: LogMessage -> Bool
+isSevere (LogMessage (Error level) _ _) = level > 50
+isSevere _ = False
+
+message :: LogMessage -> String
+message (LogMessage _ _ s) = s
