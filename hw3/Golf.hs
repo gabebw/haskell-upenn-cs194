@@ -9,7 +9,7 @@ import Data.List (group, transpose, nubBy, intercalate, sortBy, sort, zip)
 -- original list.
 --
 skips :: [a] -> [[a]]
-skips l = map (skips' l) $ [1..(length l)]
+skips l = map (skips' l) [1..(length l)]
 
 skips' :: [a] -> Int -> [a]
 skips' [] n = []
