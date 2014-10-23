@@ -13,8 +13,8 @@ type Occurrence = (Int, Int)
 -- > localMaxima [2,3,4,1,5] == [4]
 -- > localMaxima [1,2,3,4,5] == []
 localMaxima :: [Integer] -> [Integer]
-localMaxima l@(x:y:z:[]) = if y > x && y > z then [y] else []
-localMaxima l@(x:y:z:xs) = localMaxima [x, y, z] ++ localMaxima (y:z:xs)
+localMaxima (x:y:z:[]) = if y > x && y > z then [y] else []
+localMaxima (x:y:z:xs) = localMaxima [x, y, z] ++ localMaxima (y:z:xs)
 localMaxima _ = []
 
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
