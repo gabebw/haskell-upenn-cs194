@@ -3,8 +3,9 @@ module Golf where
 
 import Data.List (group, transpose, nubBy, intercalate, sortBy, sort)
 
-type OccurrenceWithMax = (Int, Int, Int)
-type Occurrence = (Int, Int)
+--
+-- Exercise 2: Local Maxima
+--
 
 -- A local maximum of a list is an element of the list which is strictly
 -- greater than both the elements immediately before and after it.
@@ -16,6 +17,13 @@ localMaxima :: [Integer] -> [Integer]
 localMaxima (x:y:z:[]) = if y > x && y > z then [y] else []
 localMaxima (x:y:z:xs) = localMaxima [x, y, z] ++ localMaxima (y:z:xs)
 localMaxima _ = []
+
+--
+-- Exercise 3: Histogram
+--
+
+type OccurrenceWithMax = (Int, Int, Int)
+type Occurrence = (Int, Int)
 
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
