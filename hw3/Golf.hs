@@ -6,6 +6,17 @@ import Data.List (group, transpose, nubBy, intercalate, sortBy, sort)
 type OccurrenceWithMax = (Int, Int, Int)
 type Occurrence = (Int, Int)
 
+-- A local maximum of a list is an element of the list which is strictly
+-- greater than both the elements immediately before and after it.
+--
+-- > localMaxima [2,9,5,6,1] == [9,6]
+-- > localMaxima [2,3,4,1,5] == [4]
+-- > localMaxima [1,2,3,4,5] == []
+localMaxima :: [Integer] -> [Integer]
+localMaxima l@(x:y:z:[]) = if y > x && y > z then [y] else []
+localMaxima l@(x:y:z:xs) = localMaxima [x, y, z] ++ localMaxima (y:z:xs)
+localMaxima _ = []
+
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
 histogram = intercalate "\n" . transpose . map (reverse . line) . setLineLength . fillInMissingOccurrences . counts
