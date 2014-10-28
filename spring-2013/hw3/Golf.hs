@@ -77,6 +77,7 @@ fillInMissingOccurrences l = sortBy sorter $ nubBy matchingFst (l ++ empty0to9)
 -- Given a value, a count of occurrences of that value, and the line length,
 -- print out a horizontal graph of the occurrences of that value
 line :: OccurrenceWithMax -> String
-line (value, count, lineLength) = (show value) ++ "=" ++ stars
+line (value, count, lineLength) = (show value) ++ "=" ++ stars ++ paddingSpaces
     where
-        stars = (take count $ repeat '*') ++ (take (lineLength - count) $ repeat ' ')
+        stars = (take count $ repeat '*')
+        paddingSpaces = take (lineLength - count) $ repeat ' '
