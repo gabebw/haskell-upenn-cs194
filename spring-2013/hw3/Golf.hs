@@ -39,7 +39,10 @@ localMaxima _ = []
 -- Exercise 3: Histogram
 --
 
+-- A number, the number of occurrences of that number, and the most occurrences
+-- across all numbers
 type OccurrenceWithMax = (Int, Int, Int)
+-- A number along with the number of occurrences of that number
 type Occurrence = (Int, Int)
 
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
