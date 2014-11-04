@@ -3,7 +3,7 @@ module LogAnalysis where
 
 import Log
 import Data.Char (isSpace)
-import Data.List (sortBy)
+import Data.List (sortBy, isInfixOf)
 
 -- Exercise 1
 
@@ -63,8 +63,23 @@ sortMessages = sortBy compareMsgs
 -- timestamp.
 whatWentWrong :: [LogMessage] -> [String]
 whatWentWrong xs = (map message) $ sortMessages $ (filter isSevereError) xs
-    where
-        isSevereError (LogMessage (Error severity) _ _) = severity > 50
-        isSevereError _ = False
-        message (LogMessage _ _ s) = s
 
+isSevereError :: LogMessage -> Bool
+isSevereError (LogMessage (Error severity) _ _) = severity > 50
+isSevereError _ = False
+
+message :: LogMessage -> String
+message (LogMessage _ _ s) = s
+
+-- Exercise 7
+
+messagesAbout :: String -> [LogMessage] -> [String]
+messagesAbout word = map message . filter (containsWord word)
+
+containsWord :: String -> LogMessage -> Bool
+containsWord w (LogMessage _ _ s) = w `isInfixOf` s
+
+-- Exercise 8
+
+whatWentWrongEnhanced :: String -> [LogMessage] -> [String]
+whatWentWrongEnhanced w lms = whatWentWrong lms ++ messagesAbout w lms
