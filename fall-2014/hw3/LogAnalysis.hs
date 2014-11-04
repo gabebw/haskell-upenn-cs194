@@ -83,3 +83,9 @@ containsWord w (LogMessage _ _ s) = w `isInfixOf` s
 
 whatWentWrongEnhanced :: String -> [LogMessage] -> [String]
 whatWentWrongEnhanced w lms = whatWentWrong lms ++ messagesAbout w lms
+
+-- Alternate solution:
+-- whatWentWrongEnhanced w = (map message) . filter (isSevereError ||| containsWord w)
+--
+-- (|||) :: (LogMessage -> Bool) -> (LogMessage -> Bool) -> LogMessage -> Bool
+-- (|||) f g x = f x || g x
