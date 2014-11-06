@@ -2,7 +2,6 @@
 module LogAnalysis where
 
 import Log
-import Data.Char (isSpace)
 import Data.List (sortBy, isInfixOf)
 
 -- Exercise 1
@@ -10,22 +9,13 @@ import Data.List (sortBy, isInfixOf)
 -- parseMessage "E 2 562 help help" == ValidLM (LogMessage (Error 2) 562 "help help")
 -- parseMessage "I 29 la la la" == ValidLM (LogMessage Info 29 "la la la")
 parseMessage :: String -> MaybeLogMessage
-parseMessage ('E':' ':xs) = parseError xs
-parseMessage ('I':' ':xs) = parseWarningOrInfo Info xs
-parseMessage ('W':' ':xs) = parseWarningOrInfo Warning xs
-parseMessage xs = InvalidLM xs
+parseMessage = parseMessage' . words
 
-parseWarningOrInfo :: MessageType -> String -> MaybeLogMessage
-parseWarningOrInfo messageType xs = ValidLM (LogMessage messageType (read $ leadingToken xs) (withoutLeadingToken xs))
-
-parseError :: String -> MaybeLogMessage
-parseError xs = ValidLM (LogMessage (Error (read $ leadingToken xs)) (read $ leadingToken $ withoutLeadingToken xs) (withoutLeadingToken $ withoutLeadingToken xs))
-
-leadingToken :: String -> String
-leadingToken = fst . break isSpace
-
-withoutLeadingToken :: String -> String
-withoutLeadingToken = (dropWhile isSpace) . snd . (break isSpace)
+parseMessage' :: [String] -> MaybeLogMessage
+parseMessage' ("E":level:time:xs) = ValidLM (LogMessage (Error (read level)) (read time) (unwords xs))
+parseMessage' ("I":time:xs) = ValidLM (LogMessage Info (read time) (unwords xs))
+parseMessage' ("W":time:xs) = ValidLM (LogMessage Warning (read time) (unwords xs))
+parseMessage' xs = InvalidLM (unwords xs)
 
 -- Exercise 2
 
