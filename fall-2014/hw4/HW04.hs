@@ -2,6 +2,9 @@
 
 module HW04 where
 
+import BST
+import Data.List (intercalate)
+
 -- Exercise 1
 --
 -- We don't know how to turn a into b, so the only way to be sure of getting a b
@@ -116,10 +119,56 @@ ex11' _ = Nothing
 --
 -- There are two possibilities: return the type unchanged, or return Nothing.
 --
--- We can't always return `Just a` because it's possible that Nothing was passed
--- in. We could use pattern matching, but that's not a different function.
+-- We can't always return `Just a` because we don't know what `a` is.
+-- We could use pattern matching to differentiate between `Just a` and
+-- `Nothing`, but that's just reimplementing `id`.
 ex12 :: Maybe a -> Maybe a
 ex12' :: Maybe a -> Maybe a
 
 ex12 = id
 ex12' _ = Nothing
+
+-- Exercise 13
+--
+-- Insertion method for a Binary Search Tree (BST).
+-- Left tree of a BST is less than or equal to the data in the node,
+-- and right tree is greater than or equal to the data in the node.
+insertBST :: (a -> a -> Ordering) -> a -> BST a -> BST a
+insertBST _ x Leaf = Node Leaf x Leaf
+insertBST orderer new (Node ltree x rtree)
+    | orderer new x == EQ || orderer new x == LT = Node (insertBST orderer new ltree) x rtree
+    | orderer new x == GT = Node ltree x (insertBST orderer new rtree)
+
+-- Exercise 14
+--
+-- Check if a list of strings contains only capitalized words.
+allCaps :: [String] -> Bool
+allCaps = all capitalized
+
+capitalized :: String -> Bool
+capitalized [] = True
+capitalized (x:xs) = x `elem` ['A'..'Z'] && all (`elem` ['a'..'z']) xs
+
+-- Exercise 15
+--
+-- Drop the trailing whitespace from a string
+dropTrailingWhitespace :: String -> String
+dropTrailingWhitespace = reverse . dropWhile (== ' ') . reverse
+
+-- Exercise 16
+--
+-- Get the first letter (if it exists) of a list of strings
+-- firstLetters ["foo", "bar"] == ['f', 'b']
+firstLetters :: [String] -> [Char]
+firstLetters = map head . filter notEmpty
+    where
+        notEmpty xs = length xs /= 0
+
+-- Exercise 17
+--
+-- Render a proper bracketed list given a list of strings:
+-- asList ["alpha","beta","gamma"] == "[alpha,beta,gamma]"
+-- asList [] == "[]"
+-- asList ["lonely"] == "[lonely]"
+asList :: [String] -> String
+asList xs = "[" ++ intercalate "," xs ++ "]"
