@@ -118,6 +118,8 @@ instance Parsable Bool where
 boolRingWorks :: Bool
 boolRingWorks = (add True False) == True &&
     (add False False) == False &&
+    (add False (addInv False)) == True &&
+    (add True (addInv True)) == True &&
     (add True addId) == True &&
     (add False addId) == False &&
     (mul True False) == False &&
