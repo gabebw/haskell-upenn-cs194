@@ -5,7 +5,9 @@ import Parser
 
 import Data.Maybe (listToMaybe)
 
+------------------------
 -- Exercise 2: Ring and Parsable instances for Mod5
+------------------------
 
 -- The integers modulo 5 form a ring with 5 elements: R = {0, 1, 2, 3, 4}.
 data Mod5 = MkMod Integer deriving (Show, Eq)
@@ -39,7 +41,9 @@ mod5ParsingWorks :: Bool
 mod5ParsingWorks = (parse "3" == Just (MkMod 3, "")) &&
     (parseRing "1 + 2 * 5" == Just (MkMod 1))
 
+------------------------
 -- Exercise 3: Ring and Parsable instances for Mat2x2
+------------------------
 
 -- A row in a matrix of size 2
 data Row = Row Integer Integer deriving (Show, Eq)
@@ -94,3 +98,36 @@ mat2x2ParsingWorks :: Bool
 mat2x2ParsingWorks = (parse "[[3,4],[5,6]]" == Just ((Mat2x2 (Row 3 4) (Row 5 6)), "")) &&
     (parseRing "[[1,2],[3,4]] + [[5,6],[7,8]]" == Just (Mat2x2 (Row 6 8) (Row 10 12))) &&
     (parseRing "[[1,2],[3,4]] * [[5,6],[7,8]]" == Just (Mat2x2 (Row 19 22) (Row 43 50)))
+
+------------------------
+-- Exercise 4: Boolean Rings
+------------------------
+
+instance Ring Bool where
+    -- Additive identity: x || False == x for all x
+    addId = False
+    addInv = not
+    -- Multiplicative identity: x && True == x for all x
+    mulId = True
+    add = (||)
+    mul = (&&)
+
+instance Parsable Bool where
+    parse = listToMaybe . reads
+
+boolRingWorks :: Bool
+boolRingWorks = (add True False) == True &&
+    (add False False) == False &&
+    (add True addId) == True &&
+    (add False addId) == False &&
+    (mul True False) == False &&
+    (mul True True) == True &&
+    (mul False mulId) == False &&
+    (mul True mulId) == True
+
+boolParsingWorks :: Bool
+boolParsingWorks = (parse "True" == Just (True, "")) &&
+    (parse "False" == Just (False, "")) &&
+    (parseRing "True + False" == Just True) &&
+    (parseRing "True * True" == Just True) &&
+    (parseRing "True * False" == Just False)
