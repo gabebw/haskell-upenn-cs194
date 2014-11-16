@@ -59,14 +59,10 @@ instance Ring Mat2x2 where
 -- Parse a string like "[[1,2],[3,4]]" into Just (Mat2x2, String)
 -- The key is that parseIntoLists uses the [[Integer]] instance of `reads`.
 instance Parsable Mat2x2 where
-    parse = parse' . parseIntoLists
+    parse = fmap parseIntoRow . parseIntoLists
 
-parseIntoRow :: [[Integer]] -> Mat2x2
-parseIntoRow [[a, b], [c, d]] = Mat2x2 (Row a b) (Row c d)
-
-parse' :: Maybe ([[Integer]], String) -> Maybe (Mat2x2, String)
-parse' Nothing = Nothing
-parse' (Just (xs, s)) = Just (parseIntoRow xs, s)
+parseIntoRow :: ([[Integer]], String) -> (Mat2x2, String)
+parseIntoRow ([[a, b], [c, d]], s) = (Mat2x2 (Row a b) (Row c d), s)
 
 parseIntoLists :: String -> Maybe ([[Integer]], String)
 parseIntoLists = listToMaybe . reads
