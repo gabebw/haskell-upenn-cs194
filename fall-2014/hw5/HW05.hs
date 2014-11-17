@@ -133,3 +133,11 @@ boolParsingWorks = (parse "True" == Just (True, "")) &&
     (parseRing "True + False" == Just True) &&
     (parseRing "True * True" == Just True) &&
     (parseRing "True * False" == Just False)
+
+main :: IO ()
+main = do
+    let mod5works = mod5RingWorks && mod5ParsingWorks
+    let mat2x2works = mat2x2RingWorks && mat2x2ParsingWorks
+    let boolWorks = boolRingWorks && boolParsingWorks
+    let result = mod5works && mat2x2works && boolWorks
+    print result
