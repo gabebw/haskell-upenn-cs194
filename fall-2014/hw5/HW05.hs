@@ -134,10 +134,44 @@ boolParsingWorks = (parse "True" == Just (True, "")) &&
     (parseRing "True * True" == Just True) &&
     (parseRing "True * False" == Just False)
 
+------
+-- Exercise 5: Distribute multiplication over addition
+-- Left distribution: a * (b + c) = (a * b) + (a * c)
+-- Right distribution: (b + c) * a = (b * a) + (c * a)
+------
+
+distributeOverAddition :: RingExpr a -> RingExpr a
+-- (x + y) * z == (x * z) + (y * z)
+distributeOverAddition (Mul (Add x y) z) = Add (Mul x z) (Mul y z)
+-- x * (y + z) == (x * y) + (x * z)
+distributeOverAddition (Mul x (Add y z)) = Add (Mul x y) (Mul x z)
+distributeOverAddition (AddInv a) = AddInv (distributeOverAddition a)
+distributeOverAddition x = x
+
+distributeOverAdditionWorks :: Bool
+distributeOverAdditionWorks =
+    -- First, test basic operations that don't involve distributing
+    distributeOverAddition lit3 == lit3 &&
+    eval (distributeOverAddition addThrees) == MkMod 1 &&
+    eval (distributeOverAddition (Add AddId lit3)) == mod3 &&
+    eval (distributeOverAddition addThrees) == MkMod 1 &&
+    -- Left distribution
+    distributeOverAddition (Mul lit3 addThrees) == Add (Mul lit3 lit3) (Mul lit3 lit3) &&
+    eval (distributeOverAddition (Mul lit3 addThrees)) == MkMod 3 &&
+    -- Right distribution
+    distributeOverAddition (Mul (Add lit3 lit3) lit4) == Add (Mul lit3 lit4) (Mul lit3 lit4) &&
+    eval (distributeOverAddition (Mul (Add lit3 lit3) lit4)) == MkMod 4 &&
+    eval (distributeOverAddition (Add (AddInv lit4) lit4)) == MkMod 0
+    where
+        addThrees = Add lit3 lit3
+        lit3 = Lit mod3
+        lit4 = Lit (MkMod 4)
+        mod3 = MkMod 3
+
 main :: IO ()
 main = do
     let mod5works = mod5RingWorks && mod5ParsingWorks
     let mat2x2works = mat2x2RingWorks && mat2x2ParsingWorks
     let boolWorks = boolRingWorks && boolParsingWorks
-    let result = mod5works && mat2x2works && boolWorks
+    let result = mod5works && mat2x2works && boolWorks && distributeOverAdditionWorks
     print result
