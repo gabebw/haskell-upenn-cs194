@@ -30,3 +30,27 @@ ynToBoolWorks =
 -- an error message or a Value that has been processed by ynToBool.
 parseData :: B.ByteString -> Either String Value
 parseData = (fmap ynToBool) . eitherDecode
+
+----------------------------------------------------
+-- Exercise 3
+-- Write a Market type and parser
+
+data Market = Market { marketname :: T.Text
+                     , x :: Float
+                     , y :: Float
+                     , state :: T.Text }
+    deriving (Show, Generic)
+
+instance FromJSON Market
+
+parseMarkets :: B.ByteString -> Either String [Market]
+parseMarkets = (fmap unwrapSuccessfulResult) . (fmap fromJSON) . parseData
+
+unwrapSuccessfulResult :: Result a -> a
+unwrapSuccessfulResult (Success a) = a
+
+testParseMarkets :: IO ()
+testParseMarkets = do
+    fileData <- B.readFile "markets.json"
+    let name = fmap marketname $ fmap (!! 0) $ parseMarkets fileData
+    either print print name
