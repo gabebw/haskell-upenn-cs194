@@ -168,10 +168,35 @@ distributeOverAdditionWorks =
         lit4 = Lit (MkMod 4)
         mod3 = MkMod 3
 
+-----------
+-- Exercise 6: Remove multiplication by the multiplicative identity, since it's
+-- a no-op
+-----------
+
+squashMulId :: RingExpr a -> RingExpr a
+squashMulId (Mul a MulId) = squashMulId a
+squashMulId (Lit a) = Lit a
+squashMulId (Add a b) = Add (squashMulId a) (squashMulId b)
+squashMulId (AddInv a) = AddInv (squashMulId a)
+squashMulId x = x
+
+squashMulIdWorks :: Bool
+squashMulIdWorks =
+    squashMulId (Mul (Add (Mul lit3 MulId) lit4) MulId) == Add lit3 lit4 &&
+    squashMulId (Add lit3 lit4) == Add lit3 lit4 &&
+    squashMulId (Add lit3 AddId) == Add lit3 AddId &&
+    squashMulId lit3 == lit3 &&
+    eval (squashMulId (Add lit3 (AddInv (Mul lit3 MulId)))) == MkMod 0
+    where
+        addThrees = Add lit3 lit3
+        lit3 = Lit mod3
+        lit4 = Lit (MkMod 4)
+        mod3 = MkMod 3
+
 main :: IO ()
 main = do
     let mod5works = mod5RingWorks && mod5ParsingWorks
     let mat2x2works = mat2x2RingWorks && mat2x2ParsingWorks
     let boolWorks = boolRingWorks && boolParsingWorks
-    let result = mod5works && mat2x2works && boolWorks && distributeOverAdditionWorks
+    let result = mod5works && mat2x2works && boolWorks && distributeOverAdditionWorks && squashMulIdWorks
     print result
