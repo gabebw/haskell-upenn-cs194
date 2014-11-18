@@ -23,3 +23,10 @@ ynToBoolWorks =
     ynToBool (Bool True) == String "Y" &&
     ynToBool (Bool False) == String "N" &&
     ynToBool (Number 3) == Number 3
+
+----------------------------------------------------
+-- Exercise 2
+-- Take in a ByteString containing JSON data and output either
+-- an error message or a Value that has been processed by ynToBool.
+parseData :: B.ByteString -> Either String Value
+parseData = (fmap ynToBool) . eitherDecode
