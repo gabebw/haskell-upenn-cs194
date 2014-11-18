@@ -9,6 +9,8 @@ import qualified Data.ByteString.Lazy.Char8 as B
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 
+import Data.List (sort)
+
 ----------------------------------------------------
 -- Exercise 1: Convert (String "Y") -> (Bool True) and
 -- (String "N") -> (Bool False)
@@ -64,3 +66,24 @@ loadData = do
     -- If there's an error, fail with its message, otherwise return the parsed
     -- data
     either fail return $ parseMarkets fileData
+
+----------------------------------------------------
+-- Exercise 5
+
+data OrdList a = OrdList { getOrdList :: [a] } deriving (Eq, Show)
+
+instance (Ord a) => Monoid (OrdList a) where
+    mappend x xs = OrdList $ sort $ (getOrdList x) ++ (getOrdList xs)
+    mempty = OrdList []
+
+evens :: OrdList Integer
+evens = OrdList [2,4,6]
+
+odds :: OrdList Integer
+odds = OrdList [1,3,5]
+
+combined :: OrdList Integer
+combined = evens <> odds
+
+ordListWorks :: Bool
+ordListWorks = combined == OrdList [1,2,3,4,5,6]
