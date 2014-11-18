@@ -87,3 +87,17 @@ combined = evens <> odds
 
 ordListWorks :: Bool
 ordListWorks = combined == OrdList [1,2,3,4,5,6]
+
+----------------------------------------------------
+-- Exercise 6
+
+type Searcher m = T.Text -> [Market] -> m
+
+-- Search for markets with the given text in their name. Convert each found
+-- market into the given Monoid m and then combine all the results with
+-- `mappend` and `mconcat`.
+search :: Monoid m => (Market -> m) -> Searcher m
+search f text = mconcat . map f . (findMarketsNamedLike text)
+
+findMarketsNamedLike :: T.Text -> [Market] -> [Market]
+findMarketsNamedLike text = filter ((text `T.isInfixOf`) . marketname)
