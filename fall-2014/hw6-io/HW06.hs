@@ -10,6 +10,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 
 import Data.List (sort)
+import Data.Maybe (listToMaybe)
 
 ----------------------------------------------------
 -- Exercise 1: Convert (String "Y") -> (Bool True) and
@@ -96,8 +97,18 @@ type Searcher m = T.Text -> [Market] -> m
 -- Search for markets with the given text in their name. Convert each found
 -- market into the given Monoid m and then combine all the results with
 -- `mappend` and `mconcat`.
+--
+-- Example usage, for Monoid [a]:
+--    search (\m -> [m]) (T.pack "ell") _markets_
 search :: Monoid m => (Market -> m) -> Searcher m
 search f text = mconcat . map f . (findMarketsNamedLike text)
 
 findMarketsNamedLike :: T.Text -> [Market] -> [Market]
 findMarketsNamedLike text = filter ((text `T.isInfixOf`) . marketname)
+
+----------------------------------------------------
+-- Exercise 7
+
+-- Return the first market found by a search, if any are found at all.
+firstFound :: Searcher (Maybe Market)
+firstFound text = getFirst . search (First . Just) text
