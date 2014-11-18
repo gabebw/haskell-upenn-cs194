@@ -54,3 +54,13 @@ testParseMarkets = do
     fileData <- B.readFile "markets.json"
     let name = fmap marketname $ fmap (!! 0) $ parseMarkets fileData
     either print print name
+
+----------------------------------------------------
+-- Exercise 4
+
+loadData :: IO [Market]
+loadData = do
+    fileData <- B.readFile "markets.json"
+    -- If there's an error, fail with its message, otherwise return the parsed
+    -- data
+    either fail return $ parseMarkets fileData
