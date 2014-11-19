@@ -110,11 +110,22 @@ findMarketsNamedLike text = filter ((text `T.isInfixOf`) . marketname)
 -- Exercise 7
 
 -- Return the first market found by a search, if any are found at all.
+-- Monoid used: First
 firstFound :: Searcher (Maybe Market)
 firstFound text = getFirst . search (First . Just) text
 
 ----------------------------------------------------
 -- Exercise 8
+
 -- Return the last market found by a search, if any are found at all.
+-- Monoid used: Last
 lastFound :: Searcher (Maybe Market)
 lastFound text = getLast . search (Last . Just) text
+
+----------------------------------------------------
+-- Exercise 9
+
+-- Return all markets found by a search.
+-- Monoid used: [a]
+allFound :: Searcher [Market]
+allFound text = search (:[]) text
