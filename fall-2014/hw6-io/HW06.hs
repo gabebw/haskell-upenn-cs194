@@ -38,11 +38,13 @@ parseData = (fmap ynToBool) . eitherDecode
 -- Exercise 3
 -- Write a Market type and parser
 
+-- x is longitude
+-- y is latitude
 data Market = Market { marketname :: T.Text
                      , x :: Float
                      , y :: Float
                      , state :: T.Text }
-    deriving (Show, Generic)
+    deriving (Show, Generic, Eq)
 
 instance FromJSON Market
 
@@ -129,3 +131,17 @@ lastFound text = getLast . search (Last . Just) text
 -- Monoid used: [a]
 allFound :: Searcher [Market]
 allFound text = search (:[]) text
+
+----------------------------------------------------
+-- Exercise 10
+
+-- Northern means a high y-value (Maine = 44).
+-- Southern means a low y-value (Texas = 33).
+data MarketByLatitude = MarketByLatitude { market :: Market } deriving (Eq, Show)
+
+instance Ord MarketByLatitude where
+    (MarketByLatitude m1) `compare` (MarketByLatitude m2) = (y m2) `compare` (y m1)
+
+-- Returns all markets found by a search, ordered northernmost to southernmost.
+orderedNtoS :: Searcher [Market]
+orderedNtoS text = (map market) . sort . (map MarketByLatitude) . search (:[]) text
