@@ -32,7 +32,7 @@ ynToBoolWorks =
 -- Take in a ByteString containing JSON data and output either
 -- an error message or a Value that has been processed by ynToBool.
 parseData :: B.ByteString -> Either String Value
-parseData = (fmap ynToBool) . eitherDecode
+parseData = fmap ynToBool . eitherDecode
 
 ----------------------------------------------------
 -- Exercise 3
@@ -49,7 +49,7 @@ data Market = Market { marketname :: T.Text
 instance FromJSON Market
 
 parseMarkets :: B.ByteString -> Either String [Market]
-parseMarkets = (fmap unwrapSuccessfulResult) . (fmap fromJSON) . parseData
+parseMarkets = fmap (unwrapSuccessfulResult . fromJSON) . parseData
 
 unwrapSuccessfulResult :: Result a -> a
 unwrapSuccessfulResult (Success a) = a
@@ -57,7 +57,7 @@ unwrapSuccessfulResult (Success a) = a
 testParseMarkets :: IO ()
 testParseMarkets = do
     fileData <- B.readFile "markets.json"
-    let name = fmap marketname $ fmap (!! 0) $ parseMarkets fileData
+    let name = fmap (marketname . (!! 0)) $ parseMarkets fileData
     either print print name
 
 ----------------------------------------------------
@@ -103,7 +103,7 @@ type Searcher m = T.Text -> [Market] -> m
 -- Example usage, for Monoid [a]:
 --    search (\m -> [m]) (T.pack "ell") _markets_
 search :: Monoid m => (Market -> m) -> Searcher m
-search f text = mconcat . map f . (findMarketsNamedLike text)
+search f text = mconcat . map f . findMarketsNamedLike text
 
 findMarketsNamedLike :: T.Text -> [Market] -> [Market]
 findMarketsNamedLike text = filter ((text `T.isInfixOf`) . marketname)
@@ -130,7 +130,7 @@ lastFound text = getLast . search (Last . Just) text
 -- Return all markets found by a search.
 -- Monoid used: [a]
 allFound :: Searcher [Market]
-allFound text = search (:[]) text
+allFound = search (:[])
 
 ----------------------------------------------------
 -- Exercise 10
