@@ -144,4 +144,6 @@ instance Ord MarketByLatitude where
 
 -- Returns all markets found by a search, ordered northernmost to southernmost.
 orderedNtoS :: Searcher [Market]
-orderedNtoS text = (map market) . sort . (map MarketByLatitude) . search (:[]) text
+orderedNtoS text = map market . getOrdList . search marketInOrdList text
+    where
+        marketInOrdList m = OrdList [MarketByLatitude m]
