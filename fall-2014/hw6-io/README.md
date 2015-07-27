@@ -6,8 +6,9 @@ Homework: http://www.seas.upenn.edu/~cis194/fall14/hw/06-monoid-io.pdf
 
 ## Set up
 
-Install `Data.Aeson` and `Data.Text`:
+Install dependencies:
 
 ```
-cabal install aeson text
+$ cabal sandbox init
+$ cabal install
 ```

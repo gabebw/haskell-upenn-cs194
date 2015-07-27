@@ -1,0 +1,21 @@
+Name:                   HW06
+Version:                0.0.0
+Cabal-Version:          >= 1.10
+Build-Type:             Simple
+
+Library
+  Default-Language:     Haskell2010
+  GHC-Options:          -Wall
+  Exposed-Modules:      HW06
+  Build-Depends:        base >= 4 && < 5
+                      , aeson
+                      , text
+                      , bytestring
+
+Executable program1
+  Main-Is:        Main.hs
+  Default-Language:     Haskell2010
+  Build-Depends:        base >= 4 && < 5
+                      , aeson
+                      , text
+                      , bytestring
