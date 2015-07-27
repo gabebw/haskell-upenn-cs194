@@ -14,7 +14,7 @@ Library
                       , vector
                       , unordered-containers
 
-Executable program1
+Executable market
   Main-Is:        Main.hs
   Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5
