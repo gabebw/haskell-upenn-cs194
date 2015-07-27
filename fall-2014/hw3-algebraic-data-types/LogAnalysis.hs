@@ -23,6 +23,7 @@ validMessagesOnly :: [MaybeLogMessage] -> [LogMessage]
 validMessagesOnly xs = map getLogMessage $ filter isValid xs
     where
         getLogMessage (ValidLM lm) = lm
+        getLogMessage _ = error "They should all be valid"
 
 isValid :: MaybeLogMessage -> Bool
 isValid (InvalidLM _) = False
