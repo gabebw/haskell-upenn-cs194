@@ -12,3 +12,15 @@ Install dependencies:
 $ cabal sandbox init
 $ cabal install
 ```
+
+Run the code:
+
+```
+$ cabal run
+```
+
+Open up GHCI:
+
+```
+$ cabal exec ghci
+```
