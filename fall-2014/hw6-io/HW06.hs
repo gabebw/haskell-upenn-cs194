@@ -57,7 +57,7 @@ unwrapSuccessfulResult (Success a) = a
 testParseMarkets :: IO ()
 testParseMarkets = do
     fileData <- B.readFile "markets.json"
-    let name = fmap (marketname . (!! 0)) $ parseMarkets fileData
+    let name = fmap (marketname . head) $ parseMarkets fileData
     either print print name
 
 ----------------------------------------------------
