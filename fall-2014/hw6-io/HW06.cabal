@@ -11,6 +11,8 @@ Library
                       , aeson
                       , text
                       , bytestring
+                      , vector
+                      , unordered-containers
 
 Executable program1
   Main-Is:        Main.hs
@@ -19,3 +21,5 @@ Executable program1
                       , aeson
                       , text
                       , bytestring
+                      , vector
+                      , unordered-containers
