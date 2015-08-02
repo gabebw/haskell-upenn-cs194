@@ -70,8 +70,6 @@ ordListWorks =
     (evens <> mempty) == evens &&
     (odds <> mempty) == odds
     where
-        combinedEvensOdds = evens <> odds
-        combinedOddsEvens = evens <> odds
         evens = OrdList [2, 4, 6]
         odds = OrdList [1, 3, 5]
 
