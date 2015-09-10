@@ -42,7 +42,8 @@ luhn n = isMultipleOfTen $ sumDigits $ doubleEveryOther $ toDigits n
 type Peg = String
 type Move = (Peg, Peg)
 
--- Move n pegs from a to b using the third peg as temporary storage.
+-- Return the list of moves to be performed to move the stack of
+-- n discs from the peg a to peg b.
 hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi 0 _ _ _ = []
-hanoi n a b temp = hanoi (n-1) a temp b ++ [(a, b)] ++ hanoi (n-1) temp b a
+hanoi n a b c = hanoi (n-1) a c b ++ [(a, b)] ++ hanoi (n-1) c b a
