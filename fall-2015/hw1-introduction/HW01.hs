@@ -1,5 +1,8 @@
 module HW01 where
 
+import System.IO (readFile)
+import Data.Char (isDigit)
+
 -- Exercise 1
 
 lastDigit :: Integer -> Integer
@@ -48,3 +51,23 @@ type Move = (Peg, Peg)
 hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi 0 _ _ _ = []
 hanoi n a b c = hanoi (n-1) a c b ++ [(a, b)] ++ hanoi (n-1) c b a
+
+-- Personal bonus exercise:
+-- 1) Read in a file of credit card numbers
+-- 2) Print "True" if every CC is valid
+-- 3) Print "False" if any of them is invalid
+
+-- Clean non-digits from a CC number, so
+-- "12-34" becomes "1234" and suitable
+-- for passing to `luhn`
+clean :: String -> String
+clean [] = []
+clean (n:ns)
+    | isDigit n = n : clean ns
+    | otherwise = clean ns
+
+-- Is every line a valid credit card number?
+allValid :: [String] -> Bool
+allValid ls = all (luhn . read . clean) ls
+
+main = print . allValid . lines =<< readFile "files/valid-tricky.txt"
