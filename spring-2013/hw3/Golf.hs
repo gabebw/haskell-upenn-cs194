@@ -63,7 +63,7 @@ setLineLength l = map setter l
         len = highestLineLength l
 
 highestLineLength :: [Occurrence] -> Int
-highestLineLength = foldl (\acc (_, n) -> max acc n) 0
+highestLineLength = maximum . map snd
 
 -- Looking at the first item in the tuple, fill in missing values with (n, 0) so
 -- that the return value has tuples where n goes from 0 to 9.
@@ -79,5 +79,5 @@ fillInMissingOccurrences l = sortBy sorter $ nubBy matchingFst (l ++ empty0to9)
 line :: OccurrenceWithMax -> String
 line (value, count, lineLength) = (show value) ++ "=" ++ stars ++ paddingSpaces
     where
-        stars = (take count $ repeat '*')
-        paddingSpaces = take (lineLength - count) $ repeat ' '
+        stars = replicate count '*'
+        paddingSpaces = replicate (lineLength - count) ' '
