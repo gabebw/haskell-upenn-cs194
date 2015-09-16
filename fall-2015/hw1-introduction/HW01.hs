@@ -10,30 +10,31 @@ dropLastDigit n = n `div` 10
 
 -- Exercise 2
 
-toDigits :: Integer -> [Integer]
-toDigits n
+toRevDigits :: Integer -> [Integer]
+toRevDigits n
     | n <= 0 = []
-    | otherwise = toDigits (dropLastDigit n) ++ [lastDigit n]
+    | otherwise = lastDigit n : toRevDigits (dropLastDigit n)
 
 -- Exercise 3
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther ns = reverse . doubleEveryOther' . reverse $ ns
+doubleEveryOther ns = zipWith (*) (cycle [1,2]) ns
 
+-- Pattern matching
 doubleEveryOther' :: [Integer] -> [Integer]
 doubleEveryOther' [] = []
-doubleEveryOther' (a:b:xs) = [a, b*2] ++ doubleEveryOther' xs
-doubleEveryOther' (a:xs) = a:doubleEveryOther' xs
+doubleEveryOther' [a] = [a]
+doubleEveryOther' (a:b:xs) = a : b*2 : doubleEveryOther' xs
 
 -- Exercise 4
 
 sumDigits :: [Integer] -> Integer
-sumDigits ns = sum $ concatMap toDigits ns
+sumDigits ns = sum $ concatMap toRevDigits ns
 
 -- Exercise 5
 
 luhn :: Integer -> Bool
-luhn n = isMultipleOfTen $ sumDigits $ doubleEveryOther $ toDigits n
+luhn = isMultipleOfTen . sumDigits . doubleEveryOther . toRevDigits
     where
         isMultipleOfTen n = n `mod` 10 == 0
 
