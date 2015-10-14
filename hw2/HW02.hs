@@ -86,12 +86,28 @@ allCodes n = concatMap nextStep (allCodes (n-1))
 -- Exercise 7 -----------------------------------------
 
 solve :: Code -> [Move]
-solve = undefined
+solve secret = reverse (makeMove secret [firstMove])
+    where
+        firstMove = getMove secret firstGuess
+        firstGuess = head allCodes6
+
+makeMove :: Code -> [Move] -> [Move]
+makeMove _ [] = []
+makeMove secret movesSoFar@(mostRecentMove:_)
+    | isTheMove secret mostRecentMove = movesSoFar
+    | otherwise = makeMove secret (nextMove:movesSoFar)
+    where
+        nextMove = getMove secret (head consistentCodes)
+        consistentCodes = filterCodes mostRecentMove allCodes6
+
+-- Did we guess the secret?
+isTheMove :: Code -> Move -> Bool
+isTheMove secret (Move guess _ _ ) = secret == guess
+
+allCodes6 :: [Code]
+allCodes6 = allCodes 6
 
 -- Bonus ----------------------------------------------
 
 fiveGuess :: Code -> [Move]
 fiveGuess = undefined
-
-
-
