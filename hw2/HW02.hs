@@ -70,12 +70,18 @@ isConsistent (Move guess inexactCount exactCount) possibleSecret =
 -- Exercise 5 -----------------------------------------
 
 filterCodes :: Move -> [Code] -> [Code]
-filterCodes = undefined
+filterCodes move codes = filter (isConsistent move) codes
 
 -- Exercise 6 -----------------------------------------
 
 allCodes :: Int -> [Code]
-allCodes = undefined
+allCodes 0 = []
+allCodes 1 = map wrapInList colors
+    where
+        wrapInList x = [x]
+allCodes n = concatMap nextStep (allCodes (n-1))
+    where
+        nextStep code = map (\color -> color:code) colors
 
 -- Exercise 7 -----------------------------------------
 
