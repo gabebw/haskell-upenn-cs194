@@ -5,20 +5,25 @@ import Data.List (group, transpose, nubBy, intercalate, sortBy, sort, zip)
 
 --
 -- Exercise 1: Hopscotch
--- Return a list of lists, where the nth list has every nth item from the
+-- Return a list of lists, where the nth list has _every_ nth item from the
 -- original list.
---
 skips :: [a] -> [[a]]
 skips l = map (skips' l) [1..(length l)]
 
+-- Get every nth item from a list.
+-- So `skips' 2 l` finds every 2nd item.
+-- It uses `elemsWithIndices` to create a list of tuples with each item tagged
+-- with its index, like `[(1, "a"), (2, "b")]`.
+-- Then it filters that list based on whether the index is divisible by n.
+-- Then it grabs the snd item of each tuple.
 skips' :: [a] -> Int -> [a]
 skips' [] n = []
 skips' l n = map snd $ filter dividesInto (elemsWithIndices l)
     where
-        dividesInto (x, _) = (x+1) `mod` n == 0
+        dividesInto (x, _) = x `mod` n == 0
 
 elemsWithIndices :: [a] -> [(Int, a)]
-elemsWithIndices = zip [0..]
+elemsWithIndices = zip [1..]
 
 --
 -- Exercise 2: Local Maxima
