@@ -63,22 +63,25 @@ instance Ord Bucket where
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
 histogram [] = ""
-histogram ns = intercalate "\n" . transpose . map (reverse . line) . fillInMissingOccurrences . counts $ ns
+histogram ns = intercalate "\n" .
+    transpose .
+    map (reverse . line) .
+    fillInMissingBuckets .
+    buckets $ ns
 
--- Given a list of numbers like [1, 1, 1, 5], returns a list of
--- Buckets.
-counts :: [Int] -> [Bucket]
-counts ns = (map mapper) (group (sort ns))
+-- Given a list of numbers like [1, 1, 1, 5], create a list of Buckets.
+buckets :: [Int] -> [Bucket]
+buckets ns = map makeBucket grouped
     where
-        mapper ns'@(n:_) = Bucket n (length ns') maximumSize
+        makeBucket ngroup@(n:_) = Bucket n (length ngroup) maximumSize
         maximumSize = maximum $ map length grouped
-        grouped = group $ sort ns
+        grouped = group (sort ns)
 
 -- A given list of buckets may have missing buckets for some of the numbers.
 -- For example, if the original list is [1, 1, 2], it only has Buckets for 1 and 2.
 -- This would add Buckets with a count of 0 for the numbers 3-10.
-fillInMissingOccurrences :: [Bucket] -> [Bucket]
-fillInMissingOccurrences bs@(b:_) = sort $ nub (bs ++ empty0to9)
+fillInMissingBuckets :: [Bucket] -> [Bucket]
+fillInMissingBuckets bs@(b:_) = sort $ nub (bs ++ empty0to9)
     where
         empty0to9 = map (\n -> Bucket n 0 most) [0..9]
         most = maxOccurrences b
