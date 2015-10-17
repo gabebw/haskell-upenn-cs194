@@ -63,7 +63,8 @@ instance Ord OccurrenceWithMax where
 
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
-histogram = intercalate "\n" . transpose .  map (reverse . line) . fillInMissingOccurrences . counts
+histogram [] = ""
+histogram ns = intercalate "\n" . transpose .  map (reverse . line) . fillInMissingOccurrences . counts $ ns
 
 -- Given a list of numbers like [1, 1, 1, 5], returns a list of
 -- (number, numberOfOccurrences)
