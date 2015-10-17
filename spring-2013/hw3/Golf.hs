@@ -1,7 +1,7 @@
 -- http://www.seas.upenn.edu/~cis194/spring13/hw/03-rec-poly.pdf
 module Golf where
 
-import Data.List (group, transpose, nubBy, intercalate, sortBy, sort, zip)
+import Data.List (group, transpose, nub, intercalate, sortBy, sort, zip)
 
 --
 -- Exercise 1: Hopscotch
@@ -46,25 +46,38 @@ localMaxima _ = []
 
 -- A number, the number of occurrences of that number, and the most occurrences
 -- across all numbers
-type OccurrenceWithMax = (Int, Int, Int)
+data OccurrenceWithMax = OccurrenceWithMax {
+    num :: Int
+    , occurrences :: Int
+    , maxOccurrences :: Int
+    } deriving (Show)
+
 -- A number along with the number of occurrences of that number
 type Occurrence = (Int, Int)
 
+instance Eq OccurrenceWithMax where
+    (OccurrenceWithMax n1 _ _) == (OccurrenceWithMax n2 _ _) = n1 == n2
+
+instance Ord OccurrenceWithMax where
+    (OccurrenceWithMax n1 _ _) `compare` (OccurrenceWithMax n2 _ _) = n1 `compare` n2
+
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
-histogram = intercalate "\n" . transpose . map (reverse . line) . setLineLength . fillInMissingOccurrences . counts
+histogram = intercalate "\n" . transpose .  map (reverse . line) . fillInMissingOccurrences . counts
 
 -- Given a list of numbers like [1, 1, 1, 5], returns a list of
 -- (number, numberOfOccurrences)
-counts :: [Int] -> [Occurrence]
-counts = (map mapper) . (group . sort)
+counts :: [Int] -> [OccurrenceWithMax]
+counts ns = (map mapper) (group (sort ns))
     where
-        mapper x = (head x, length x)
+        mapper ns'@(n:_) = OccurrenceWithMax n (length ns') maximumSize
+        maximumSize = maximum $ map length grouped
+        grouped = group $ sort ns
 
 setLineLength :: [Occurrence] -> [OccurrenceWithMax]
 setLineLength l = map setter l
     where
-        setter (a, b) = (a, b, len)
+        setter (a, b) = OccurrenceWithMax a b len
         len = highestLineLength l
 
 highestLineLength :: [Occurrence] -> Int
@@ -72,17 +85,16 @@ highestLineLength = maximum . map snd
 
 -- Looking at the first item in the tuple, fill in missing values with (n, 0) so
 -- that the return value has tuples where n goes from 0 to 9.
-fillInMissingOccurrences :: [Occurrence] -> [Occurrence]
-fillInMissingOccurrences l = sortBy sorter $ nubBy matchingFst (l ++ empty0to9)
+fillInMissingOccurrences :: [OccurrenceWithMax] -> [OccurrenceWithMax]
+fillInMissingOccurrences os@(o:_) = sort $ nub (os ++ empty0to9)
     where
-        sorter (x, _) (y, _) = compare x y
-        empty0to9 = map (\x -> (x, 0)) (take 10 [0..])
-        matchingFst x y = fst x == fst y
+        empty0to9 = map (\n -> OccurrenceWithMax n 0 most) [0..10]
+        most = maxOccurrences o
 
 -- Given a value, a count of occurrences of that value, and the line length,
 -- print out a horizontal graph of the occurrences of that value
 line :: OccurrenceWithMax -> String
-line (value, count, lineLength) = (show value) ++ "=" ++ stars ++ paddingSpaces
+line (OccurrenceWithMax value count lineLength) = (show value) ++ "=" ++ stars ++ paddingSpaces
     where
         stars = replicate count '*'
         paddingSpaces = replicate (lineLength - count) ' '
