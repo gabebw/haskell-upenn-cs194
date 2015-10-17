@@ -46,7 +46,8 @@ localMaxima _ = []
 
 -- A number, the number of occurrences of that number, and the most occurrences
 -- across all numbers
-data OccurrenceWithMax = OccurrenceWithMax {
+-- Why call it Bucket? https://en.wikipedia.org/wiki/Data_binning
+data Bucket = Bucket {
     num :: Int
     , occurrences :: Int
     , maxOccurrences :: Int
@@ -55,11 +56,12 @@ data OccurrenceWithMax = OccurrenceWithMax {
 -- A number along with the number of occurrences of that number
 type Occurrence = (Int, Int)
 
-instance Eq OccurrenceWithMax where
-    (OccurrenceWithMax n1 _ _) == (OccurrenceWithMax n2 _ _) = n1 == n2
+-- Always compare Bucket based on the number it represents
+instance Eq Bucket where
+    (Bucket n1 _ _) == (Bucket n2 _ _) = n1 == n2
 
-instance Ord OccurrenceWithMax where
-    (OccurrenceWithMax n1 _ _) `compare` (OccurrenceWithMax n2 _ _) = n1 `compare` n2
+instance Ord Bucket where
+    (Bucket n1 _ _) `compare` (Bucket n2 _ _) = n1 `compare` n2
 
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
@@ -67,11 +69,11 @@ histogram [] = ""
 histogram ns = intercalate "\n" . transpose .  map (reverse . line) . fillInMissingOccurrences . counts $ ns
 
 -- Given a list of numbers like [1, 1, 1, 5], returns a list of
--- (number, numberOfOccurrences)
-counts :: [Int] -> [OccurrenceWithMax]
+-- Buckets.
+counts :: [Int] -> [Bucket]
 counts ns = (map mapper) (group (sort ns))
     where
-        mapper ns'@(n:_) = OccurrenceWithMax n (length ns') maximumSize
+        mapper ns'@(n:_) = Bucket n (length ns') maximumSize
         maximumSize = maximum $ map length grouped
         grouped = group $ sort ns
 
@@ -84,18 +86,19 @@ setLineLength l = map setter l
 highestLineLength :: [Occurrence] -> Int
 highestLineLength = maximum . map snd
 
--- Looking at the first item in the tuple, fill in missing values with (n, 0) so
--- that the return value has tuples where n goes from 0 to 9.
-fillInMissingOccurrences :: [OccurrenceWithMax] -> [OccurrenceWithMax]
-fillInMissingOccurrences os@(o:_) = sort $ nub (os ++ empty0to9)
+-- A given list of buckets may have missing buckets for some of the numbers.
+-- For example, if the original list is [1, 1, 2], it only has Buckets for 1 and 2.
+-- This would add Buckets with a count of 0 for the numbers 3-10.
+fillInMissingOccurrences :: [Bucket] -> [Bucket]
+fillInMissingOccurrences bs@(b:_) = sort $ nub (bs ++ empty0to9)
     where
-        empty0to9 = map (\n -> OccurrenceWithMax n 0 most) [0..10]
-        most = maxOccurrences o
+        empty0to9 = map (\n -> Bucket n 0 most) [0..9]
+        most = maxOccurrences b
 
--- Given a value, a count of occurrences of that value, and the line length,
--- print out a horizontal graph of the occurrences of that value
-line :: OccurrenceWithMax -> String
-line (OccurrenceWithMax value count lineLength) = (show value) ++ "=" ++ stars ++ paddingSpaces
+-- Given a Bucket, print out a _horizontal_ graph of the occurrences of that value.
+-- It will be transformed into a vertical version by `transpose` in `histogram`.
+line :: Bucket -> String
+line (Bucket n count lineLength) = (show n) ++ "=" ++ stars ++ paddingSpaces
     where
         stars = replicate count '*'
         paddingSpaces = replicate (lineLength - count) ' '
