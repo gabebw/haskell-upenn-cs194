@@ -45,16 +45,13 @@ localMaxima _ = []
 --
 
 -- A number, the number of occurrences of that number, and the most occurrences
--- across all numbers
+-- across all numbers so we know how much to pad shorter lines.
 -- Why call it Bucket? https://en.wikipedia.org/wiki/Data_binning
 data Bucket = Bucket {
     num :: Int
     , occurrences :: Int
     , maxOccurrences :: Int
     } deriving (Show)
-
--- A number along with the number of occurrences of that number
-type Occurrence = (Int, Int)
 
 -- Always compare Bucket based on the number it represents
 instance Eq Bucket where
@@ -66,7 +63,7 @@ instance Ord Bucket where
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
 histogram [] = ""
-histogram ns = intercalate "\n" . transpose .  map (reverse . line) . fillInMissingOccurrences . counts $ ns
+histogram ns = intercalate "\n" . transpose . map (reverse . line) . fillInMissingOccurrences . counts $ ns
 
 -- Given a list of numbers like [1, 1, 1, 5], returns a list of
 -- Buckets.
@@ -76,15 +73,6 @@ counts ns = (map mapper) (group (sort ns))
         mapper ns'@(n:_) = Bucket n (length ns') maximumSize
         maximumSize = maximum $ map length grouped
         grouped = group $ sort ns
-
-setLineLength :: [Occurrence] -> [OccurrenceWithMax]
-setLineLength l = map setter l
-    where
-        setter (a, b) = OccurrenceWithMax a b len
-        len = highestLineLength l
-
-highestLineLength :: [Occurrence] -> Int
-highestLineLength = maximum . map snd
 
 -- A given list of buckets may have missing buckets for some of the numbers.
 -- For example, if the original list is [1, 1, 2], it only has Buckets for 1 and 2.
