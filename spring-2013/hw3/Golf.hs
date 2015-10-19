@@ -8,17 +8,17 @@ import Data.List (group, transpose, nub, intercalate, sortBy, sort, zip)
 -- Return a list of lists, where the nth list has _every_ nth item from the
 -- original list.
 skips :: [a] -> [[a]]
-skips l = map (skips' l) [1..(length l)]
+skips xs = map (skips' xs) [1..(length xs)]
 
 -- Get every nth item from a list.
--- So `skips' 2 l` finds every 2nd item.
+-- So `skips' 2 xs` finds every 2nd item.
 -- It uses `elemsWithIndices` to create a list of tuples with each item tagged
 -- with its index, like `[(1, "a"), (2, "b")]`.
 -- Then it filters that list based on whether the index is divisible by n.
 -- Then it grabs the snd item of each tuple.
 skips' :: [a] -> Int -> [a]
 skips' [] n = []
-skips' l n = map snd $ filter dividesInto (elemsWithIndices l)
+skips' xs n = map snd $ filter dividesInto (elemsWithIndices xs)
     where
         dividesInto (x, _) = x `mod` n == 0
 
