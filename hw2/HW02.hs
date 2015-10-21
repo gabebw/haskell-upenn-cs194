@@ -79,6 +79,7 @@ allCodes 0 = []
 allCodes 1 = map wrapInList colors
     where
         wrapInList x = [x]
+
 allCodes n = concatMap nextStep (allCodes (n-1))
     where
         nextStep code = map (\color -> color:code) colors
@@ -98,7 +99,14 @@ makeMove secret movesSoFar@(mostRecentMove:_)
     | otherwise = makeMove secret (nextMove:movesSoFar)
     where
         nextMove = getMove secret (head consistentCodes)
-        consistentCodes = filterCodes mostRecentMove allCodes6
+        consistentCodes = hasNoneOfCodesFrom movesSoFar $
+          filterCodes mostRecentMove allCodes6
+
+hasNoneOfCodesFrom :: [Move] -> [Code] -> [Code]
+hasNoneOfCodesFrom ms cs = filter notYetSeen cs
+  where
+    notYetSeen = not . (`elem` moveCodes)
+    moveCodes = map (\(Move code _ _) -> code) ms
 
 -- Did we guess the secret?
 isTheMove :: Code -> Move -> Bool
