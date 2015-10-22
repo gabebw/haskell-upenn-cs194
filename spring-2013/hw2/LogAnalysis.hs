@@ -43,6 +43,7 @@ insert m (Node ltree msg rtree)
 
 build :: [LogMessage] -> MessageTree
 -- Could also be: foldl (flip insert) Leaf
+-- Or: foldr insert Leaf
 build = foldl (\tree m -> insert m tree) Leaf
 
 inOrder :: MessageTree -> [LogMessage]
