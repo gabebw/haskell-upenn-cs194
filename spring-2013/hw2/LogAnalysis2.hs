@@ -15,4 +15,9 @@ parseMessageWords xs = Unknown (unwords xs)
 
 -- Exercise 2
 insert :: LogMessage -> MessageTree -> MessageTree
-insert message tree =
+insert (Unknown _) tree = tree
+insert message Leaf = Node Leaf message Leaf
+insert _ (Node _ (Unknown _) _) = error "stop it"
+insert message@(LogMessage _ timestamp1 _) (Node left nodeMessage@(LogMessage _ timestamp2 _) right)
+    | timestamp1 <= timestamp2 = Node (insert message left) nodeMessage right
+    | otherwise = Node left nodeMessage (insert message right)
