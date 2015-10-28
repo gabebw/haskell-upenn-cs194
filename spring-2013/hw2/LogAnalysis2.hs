@@ -13,7 +13,7 @@ parseMessageWords ("W":timestamp:message) = LogMessage Warning (read timestamp) 
 parseMessageWords ("E":level:timestamp:message) = LogMessage (Error (read level)) (read timestamp) (unwords message)
 parseMessageWords xs = Unknown (unwords xs)
 
--- Exercise 2
+-- Exercise 2: insert a single message into a MessageTree
 insert :: LogMessage -> MessageTree -> MessageTree
 insert (Unknown _) tree = tree
 insert message Leaf = Node Leaf message Leaf
@@ -21,3 +21,12 @@ insert _ (Node _ (Unknown _) _) = error "stop it"
 insert message@(LogMessage _ timestamp1 _) (Node left nodeMessage@(LogMessage _ timestamp2 _) right)
     | timestamp1 <= timestamp2 = Node (insert message left) nodeMessage right
     | otherwise = Node left nodeMessage (insert message right)
+
+-- Exercise 3: Build a MessageTree from a list of LogMessages
+build :: [LogMessage] -> MessageTree
+build = foldl (flip insert) Leaf
+
+-- Or, as an explicit fold without `foldl`:
+-- build ms = build' Leaf ms
+-- build' tree [] = tree
+-- build' tree (m:ms) = build' (insert m tree) ms
