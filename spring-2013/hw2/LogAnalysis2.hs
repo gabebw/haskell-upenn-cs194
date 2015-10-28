@@ -5,8 +5,10 @@ import Log
 
 parseMessage :: String -> LogMessage
 -- parseMessage "E 2 562 help help" == LogMessage (Error 2) 562 "help help"
-parseMessage ('I':xs) = LogMessage Info (read $ head $ words xs) (unwords $ tail $ words xs)
-parseMessage ('W':xs) = LogMessage Warning (read $ head $ words xs) (unwords $ tail $ words xs)
-parseMessage ('E':xs) = LogMessage (Error (read $ head $ words xs)) (read $ head $ tail $ words xs) (unwords $ tail $ tail $ words xs)
-parseMessage xs = Unknown xs
+parseMessage = parseMessageWords . words
 
+parseMessageWords :: [String] -> LogMessage
+parseMessageWords ("I":timestamp:message) = LogMessage Info (read timestamp) (unwords message)
+parseMessageWords ("W":timestamp:message) = LogMessage Warning (read timestamp) (unwords message)
+parseMessageWords ("E":level:timestamp:message) = LogMessage (Error (read level)) (read timestamp) (unwords message)
+parseMessageWords xs = Unknown (unwords xs)
