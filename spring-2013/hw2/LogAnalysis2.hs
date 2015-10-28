@@ -12,3 +12,7 @@ parseMessageWords ("I":timestamp:message) = LogMessage Info (read timestamp) (un
 parseMessageWords ("W":timestamp:message) = LogMessage Warning (read timestamp) (unwords message)
 parseMessageWords ("E":level:timestamp:message) = LogMessage (Error (read level)) (read timestamp) (unwords message)
 parseMessageWords xs = Unknown (unwords xs)
+
+-- Exercise 2
+insert :: LogMessage -> MessageTree -> MessageTree
+insert message tree =
