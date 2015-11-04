@@ -30,3 +30,19 @@ build = foldl (flip insert) Leaf
 -- build ms = build' Leaf ms
 -- build' tree [] = tree
 -- build' tree (m:ms) = build' (insert m tree) ms
+
+-- Exercise 4: produce sorted list of LogMessages by traversing the MessageTree
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node ltree message rtree) = inOrder ltree ++ [message] ++ inOrder rtree
+
+-- Exercise 5: Take an _unsorted_ list of LogMessages, and return a list of the
+-- messages corresponding to errors with severity >= 50, sorted by timestamp.
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong = (map message) . (filter isSevereError) . inOrder . build
+    where
+        isSevereError :: LogMessage -> Bool
+        isSevereError (LogMessage (Error level) _ _) = level >= 50
+        isSevereError _ = False
+
+        message (LogMessage _ _ text) = text
