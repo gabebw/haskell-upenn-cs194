@@ -39,9 +39,9 @@ inOrder (Node ltree message rtree) = inOrder ltree ++ [message] ++ inOrder rtree
 -- Exercise 5: Take an _unsorted_ list of LogMessages, and return a list of the
 -- messages corresponding to errors with severity >= 50, sorted by timestamp.
 whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong messages = foldl folder [] messages
+whatWentWrong messages = foldl addSevereMessageText [] messages
     where
-        folder texts message
+        addSevereMessageText texts message
             | isSevereError message = (messageText message):texts
             | otherwise = texts
 
