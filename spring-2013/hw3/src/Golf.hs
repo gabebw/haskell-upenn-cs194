@@ -1,5 +1,5 @@
 -- http://www.seas.upenn.edu/~cis194/spring13/hw/03-rec-poly.pdf
-module Golf where
+module Golf (skips, localMaxima, histogram) where
 
 import Data.List (group, transpose, nub, intercalate, sortBy, sort, zip)
 
@@ -63,7 +63,8 @@ instance Ord Bucket where
 -- Given a list of numbers 0-9, returns a histogram of each number's frequency.
 histogram :: [Int] -> String
 histogram [] = ""
-histogram ns = intercalate "\n" .
+histogram ns = (++ "\n") .
+    intercalate "\n" .
     transpose .
     map (reverse . line) .
     fillInMissingBuckets .
