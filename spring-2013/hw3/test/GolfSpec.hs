@@ -12,7 +12,7 @@ spec = do
     describe "skips" $ do
         it "works on empty lists" $ do
             let result = [] :: [[Int]]
-            result `shouldBe` result
+            skips [] `shouldBe` result
 
         it "works on [1]" $ do
             let expected = [[1]] :: [[Int]]
@@ -31,7 +31,6 @@ spec = do
 
         it "returns an empty list when there are no maxima" $ do
             localMaxima [1, 2, 3, 4, 5] `shouldBe` []
-
 
     describe "histogram" $ do
         it "returns an empty string for an empty list" $ do
