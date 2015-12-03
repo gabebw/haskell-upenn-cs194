@@ -1,7 +1,7 @@
 module GolfSpec (main, spec) where
 
 import Test.Hspec
-import Golf
+import Golf2
 import Data.List (intercalate)
 
 main :: IO ()
