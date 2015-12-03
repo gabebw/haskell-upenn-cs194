@@ -13,5 +13,11 @@ skips' xs n
         where
             (front, back) = splitAt n xs
 
-localMaxima = undefined
+-- Exercise 2: localMaxima
+localMaxima :: [Integer] -> [Integer]
+localMaxima (x:y:z:xs)
+    | maximum [x, y, z] == y = y : localMaxima (z:xs)
+    | otherwise = localMaxima (y:z:xs)
+localMaxima _ = []
+
 histogram = undefined
