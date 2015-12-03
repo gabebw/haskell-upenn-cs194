@@ -20,4 +20,5 @@ localMaxima (x:y:z:xs)
     | otherwise = localMaxima (y:z:xs)
 localMaxima _ = []
 
+-- Exercise 3: Histogram
 histogram = undefined
