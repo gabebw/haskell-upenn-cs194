@@ -7,6 +7,9 @@ parseMessage :: String -> LogMessage
 -- parseMessage "E 2 562 help help" == LogMessage (Error 2) 562 "help help"
 parseMessage = parseMessageWords . words
 
+parse :: String -> [LogMessage]
+parse = (map parseMessage) . lines
+
 parseMessageWords :: [String] -> LogMessage
 parseMessageWords ("I":timestamp:message) = LogMessage Info (read timestamp) (unwords message)
 parseMessageWords ("W":timestamp:message) = LogMessage Warning (read timestamp) (unwords message)

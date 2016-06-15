@@ -2,10 +2,6 @@
 
 To run it:
 
-```
-$ ghci LogAnalysis.hs
-> testParse (map parseMessage . lines) 10 "error.log"
-> testWhatWentWrong (map parseMessage . lines) whatWentWrong "error.log"
-```
+    runhaskell Main.hs
 
 More about mustard watches: http://wadler.blogspot.com/2013/03/mustard-watch.html
