@@ -18,3 +18,21 @@ main = hspec $ do
             evalStr "2+3*" `shouldBe` Nothing
             evalStr "3+" `shouldBe` Nothing
             evalStr "*2" `shouldBe` Nothing
+
+    describe "ExprT" $ do
+        it "is an instance of Expr" $ do
+            let old = Mul (Add (Lit 2) (Lit 3)) (Lit 4)
+            let new = mul (add (lit 2) (lit 3)) (lit 4) :: ExprT
+            eval new `shouldBe` eval old
+
+    describe "Integer" $ do
+        it "is an instance of Expr" $ do
+            let old = Mul (Add (Lit 2) (Lit 3)) (Lit 4)
+            let new = mul (add (lit 2) (lit 3)) (lit 4) :: Integer
+            eval new `shouldBe` eval old
+
+    describe "Bool" $ do
+        -- FIXME
+        it "is an instance of Expr" $ do
+            let new = eval (mul (add (lit 2) (lit 3)) (lit -1)) :: Bool
+            eval new `shouldBe` eval old
